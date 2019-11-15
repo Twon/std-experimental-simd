@@ -1,0 +1,10 @@
+@PACKAGE_INIT@
+
+set_and_check(CPP_INDIRECT_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+
+check_required_components(std_experimental_simd)
+
+if(NOT TARGET std_experimental_simd::std_experimental_simd)
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+    include(${CMAKE_CURRENT_LIST_DIR}/std_experimental_simd-target.cmake)
+endif()
