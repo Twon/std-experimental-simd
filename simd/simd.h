@@ -1,8 +1,0 @@
-//
-// Created by Antony Peacock on 15/11/2019.
-//
-
-#ifndef STD_EXPERIMENTAL_SIMD_SIMD_H
-#define STD_EXPERIMENTAL_SIMD_SIMD_H
-
-#endif //STD_EXPERIMENTAL_SIMD_SIMD_H

@@ -6,11 +6,11 @@ At present, this author, is aware of 2 alternative existing implementations of s
 - [std-simd](https://github.com/VcDevel/std-simd) is Matthias Kretz's implementation, which derives from the [Vc](https://github.com/VcDevel/Vc) library. Matthias has authored the papers proposing std::experimental::simd.  This implementation targets GCC.
 - [dimsum](https://github.com/google/dimsum)
 
-Alternative Vector Libraries
+# Alternative Vector Libraries
 - [tsimd - Fundamental C++ SIMD types for Intel CPUs (sse to avx512)](https://github.com/ospray/tsimd)
 - [C++ wrappers for SIMD intrinsics](https://github.com/QuantStack/xsimd)
 - [libsimdpp - Portable header-only zero-overhead C++ low level SIMD library](https://github.com/p12tic/libsimdpp)
-- [C++ vector class library](agner.org/optimize/#vectorclass)
+- [C++ vector class library](https://www.agner.org/optimize/#vectorclass)
 
 # References
 - [P0214R5]Matthias Kretz. P0214R5: Data-Parallel Vector Types & Operations. ISO/IECC++Standards Committee Paper. 2017.url:http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0214r5.pdf.

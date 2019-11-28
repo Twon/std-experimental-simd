@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+if(NOT DEFINED PROJECT_NAME)
     set(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT ON)
 endif()
 
@@ -12,25 +12,46 @@ project(std_experimental_simd
     LANGUAGES CXX
 )
 
+# Include necessary submodules
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+include(CTest)
+include(FetchContent)
+include(Documentation)
+include(GNUInstallDirs)
+include(GenerateExportHeader)
+include(CMakeDependentOption)
+include(CMakePackageConfigHelpers)
+include(WriteCompilerDetectionHeader)
+
+# Ensure code coverage is switched off for Mac OS until the code coverage library addresses the AppleClang issue
+cmake_dependent_option(ENABLE_CODE_COVERAGE "Enable code coverage" ON "\"${CMAKE_CXX_COMPILER_ID}\" STREQUAL \"Clang\" OR \"${CMAKE_CXX_COMPILER_ID}\" STREQUAL \"GNU\"" OFF)
+
+
 add_library(std_experimental_simd INTERFACE)
 target_include_directories(std_experimental_simd
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 target_sources(std_experimental_simd
     INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd.h>
-        $<INSTALL_INTERFACE:include/simd/simd.h>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd_platform.hpp>
+        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd.h>
+        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd_platform.hpp>
 )
 
 target_compile_features(std_experimental_simd
     INTERFACE
-        cxx_std_14
+        cxx_std_17
 )
 
-include(WriteCompilerDetectionHeader)
+# namespaced alias for users depending on std_experimental_simd as a sub-project.
+add_library(std_experimental_simd::std_experimental_simd ALIAS std_experimental_simd)
+
 write_compiler_detection_header(
     FILE simd_compiler_detection.h
     PREFIX STD_EXPERIMENTAL_SIMD
@@ -40,10 +61,81 @@ write_compiler_detection_header(
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
-include(GenerateExportHeader)
 #generate_export_header(std_experimental_simd BASE_NAME simd)
 
-include(GNUInstallDirs)
+if(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT)
+
+    if (${BUILD_TESTING})
+        FetchContent_Declare(
+            catch2
+            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        )
+
+        FetchContent_GetProperties(catch2)
+        if(NOT catch2_POPULATED)
+            FetchContent_Populate(catch2)
+            add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
+        endif()
+
+        add_executable(test_std_experimental_simd "")
+        target_sources(test_std_experimental_simd
+            PRIVATE
+                simd/simd.test.cpp
+        )
+
+        target_link_libraries(test_std_experimental_simd
+            PRIVATE
+                std_experimental_simd::std_experimental_simd
+                Catch2::Catch2
+        )
+
+        target_compile_options(test_std_experimental_simd
+            PRIVATE
+                $<$<CXX_COMPILER_ID:MSVC>:/W4>
+                $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-Werror;-Wall>
+        )
+
+        set_target_properties(test_std_experimental_simd PROPERTIES
+            CXX_STANDARD 17
+            CXX_STANDARD_REQUIRED YES
+            CXX_EXTENSIONS NO
+        )
+
+        enable_testing()
+        add_test(
+            NAME test_std_experimental_simd
+            COMMAND test_std_experimental_simd
+            WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        )
+
+        list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
+        include(Catch)
+        catch_discover_tests(test_std_experimental_simd)
+    endif(${BUILD_TESTING})
+
+    if (ENABLE_CODE_COVERAGE)
+        FetchContent_Declare(
+            codecoverage
+            #GIT_REPOSITORY https://github.com/RWTH-HPC/CMake-codecov.git
+
+            # Use branch fixing source file externsion comparison bug affecting files with ".tests.cpp" extension until its merged into the original repository
+            GIT_REPOSITORY https://github.com/Twon/CMake-codecov.git
+            GIT_TAG fix_multi_extension_files
+        )
+
+        FetchContent_GetProperties(codecoverage)
+        if(NOT codecoverage_POPULATED)
+            FetchContent_Populate(codecoverage)
+            list(APPEND CMAKE_MODULE_PATH ${codecoverage_SOURCE_DIR}/cmake)
+        endif()
+
+        set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
+        find_package(codecov)
+        add_coverage(test_std_experimental_simd)
+        list(APPEND LCOV_REMOVE_PATTERNS "'/usr/*'")
+        coverage_evaluate()
+    endif()
+
 # Hierarchically copy headers to the install dir
 install (
     DIRECTORY
@@ -67,7 +159,6 @@ install(TARGETS std_experimental_simd
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION include/simd
 )
 
 install(
@@ -76,7 +167,6 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/std_experimental_simd"
 )
 
-include(CMakePackageConfigHelpers)
 configure_package_config_file(
     ${CMAKE_CURRENT_LIST_DIR}/cmake/std_experimental_simd-config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/std_experimental_simd-config.cmake
@@ -98,3 +188,5 @@ install(
     DESTINATION
         "${CMAKE_INSTALL_LIBDIR}/cmake/std_experimental_simd"
 )
+
+endif(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT)
