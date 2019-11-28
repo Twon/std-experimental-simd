@@ -38,7 +38,7 @@ target_include_directories(std_experimental_simd
 
 target_sources(std_experimental_simd
     INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd.h>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd_platform.hpp>
         $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd.h>
         $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd_platform.hpp>
