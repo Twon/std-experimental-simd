@@ -80,7 +80,7 @@ if(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT)
         add_executable(test_std_experimental_simd "")
         target_sources(test_std_experimental_simd
             PRIVATE
-                simd/std_experimental_simd.test.cpp
+                simd/simd.test.cpp
         )
 
         target_link_libraries(test_std_experimental_simd
