@@ -15,14 +15,21 @@ project(std_experimental_simd
 # Include necessary submodules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+# CMake includes
 include(CTest)
 include(FetchContent)
-include(Documentation)
 include(GNUInstallDirs)
 include(GenerateExportHeader)
 include(CMakeDependentOption)
 include(CMakePackageConfigHelpers)
 include(WriteCompilerDetectionHeader)
+
+set(STD_EXPERIMENTAL_SIMD_PREDEFINED_TARGETS "_BuildTargets")
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER ${STD_EXPERIMENTAL_SIMD_PREDEFINED_TARGETS})
+
+# Project includes
+include(Documentation)
 
 # Ensure code coverage is switched off for Mac OS until the code coverage library addresses the AppleClang issue
 cmake_dependent_option(ENABLE_CODE_COVERAGE "Enable code coverage" ON "\"${CMAKE_CXX_COMPILER_ID}\" STREQUAL \"Clang\" OR \"${CMAKE_CXX_COMPILER_ID}\" STREQUAL \"GNU\"" OFF)
@@ -40,7 +47,7 @@ target_sources(std_experimental_simd
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd_platform.hpp>
-        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd.h>
+        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd>
         $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd_platform.hpp>
 )
 
@@ -116,11 +123,7 @@ if(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT)
     if (ENABLE_CODE_COVERAGE)
         FetchContent_Declare(
             codecoverage
-            #GIT_REPOSITORY https://github.com/RWTH-HPC/CMake-codecov.git
-
-            # Use branch fixing source file externsion comparison bug affecting files with ".tests.cpp" extension until its merged into the original repository
-            GIT_REPOSITORY https://github.com/Twon/CMake-codecov.git
-            GIT_TAG fix_multi_extension_files
+            GIT_REPOSITORY https://github.com/RWTH-HPC/CMake-codecov.git
         )
 
         FetchContent_GetProperties(codecoverage)
