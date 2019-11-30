@@ -45,10 +45,10 @@ target_include_directories(std_experimental_simd
 
 target_sources(std_experimental_simd
     INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simd/simd_platform.hpp>
-        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd>
-        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/simd/simd_platform.hpp>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/experimental/simd>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/experimental/simd_platform.hpp>
+        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/experimental/simd>
+        $<INSTALL_INTERFACE:{CMAKE_INSTALL_INCLUDEDIR}/experimental/simd_platform.hpp>
 )
 
 target_compile_features(std_experimental_simd
@@ -60,7 +60,7 @@ target_compile_features(std_experimental_simd
 add_library(std_experimental_simd::std_experimental_simd ALIAS std_experimental_simd)
 
 write_compiler_detection_header(
-    FILE simd_compiler_detection.h
+    FILE experimental/simd_compiler_detection.h
     PREFIX STD_EXPERIMENTAL_SIMD
     COMPILERS GNU Clang MSVC Intel AppleClang
     FEATURES cxx_constexpr
@@ -68,7 +68,7 @@ write_compiler_detection_header(
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
-#generate_export_header(std_experimental_simd BASE_NAME simd)
+#generate_export_header(std_experimental_simd BASE_NAME experimental/simd)
 
 if(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT)
 
@@ -87,7 +87,7 @@ if(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT)
         add_executable(test_std_experimental_simd "")
         target_sources(test_std_experimental_simd
             PRIVATE
-                simd/simd.test.cpp
+                experimental/simd.test.cpp
         )
 
         target_link_libraries(test_std_experimental_simd
@@ -142,9 +142,9 @@ if(STD_EXPERIMENTAL_SIMD_IS_NOT_SUBPROJECT)
 # Hierarchically copy headers to the install dir
 install (
     DIRECTORY
-        "${CMAKE_CURRENT_SOURCE_DIR}/simd"
+        "${CMAKE_CURRENT_SOURCE_DIR}/experimental"
     DESTINATION
-        ${CMAKE_INSTALL_INCLUDEDIR}/simd
+        ${CMAKE_INSTALL_INCLUDEDIR}/experimental
     FILES_MATCHING PATTERN
         "*.hpp"
 )
@@ -154,7 +154,7 @@ install(
         "${CMAKE_CURRENT_SOURCE_DIR}/simd_export.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/simd_compiler_detection.h"
     DESTINATION
-        ${CMAKE_INSTALL_INCLUDEDIR}/simd
+        ${CMAKE_INSTALL_INCLUDEDIR}/experimental
 )
 
 install(TARGETS std_experimental_simd

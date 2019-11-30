@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <simd/simd_platform.hpp>
+#include <experimental/simd_platform.hpp>
 
 /*! \namespace std::experimental
 
