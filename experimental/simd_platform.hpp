@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <simd_compiler_detection.h>
+#include <experimental/simd_compiler_detection.h>
 
 
 #if defined(_M_IX86) || defined(i386) || defined(__i386) || defined(__i386__) || defined(_X86_) || defined(__X86__) || defined(__I86__) || defined(__INTEL__) || defined(__THW_INTEL__)

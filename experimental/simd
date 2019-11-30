@@ -1,0 +1,108 @@
+/*! \file simd
+        The entry point for the std::experimental::simd namespace and containing classes.
+ */
+#ifndef STD_EXPERIMENTAL_SIMD_H
+#define STD_EXPERIMENTAL_SIMD_H
+
+#pragma once
+
+#include <experimental/simd_platform.hpp>
+
+/*! \namespace std::experimental
+
+ */
+namespace std::experimental {
+
+    /*! \namespace datapar_abi
+
+     */
+    namespace datapar_abi {
+        struct scalar {};
+    }
+
+    /*! \namespace simd_abi
+
+     */
+    namespace simd_abi {
+
+    }
+
+    /*! \defgroup simd.traits
+        @{
+
+     */
+
+    template <class T> struct is_abi_tag;
+    template <class T> struct is_simd;
+    template <class T> struct is_mask;
+//    template <class T, size_t N> struct abi_for_size { using type = implementation-defined; };
+//    template <class T, class Abi = simd_abi::compatible<T>> struct simd_size;
+//    template <class T, class U = typename T::value_type> struct memory_alignment;
+    //! @}
+
+    // [simd.mask.class]
+    template <class _Tp, class _Abi>
+    class simd_mask {
+    };
+
+
+    /*! \defgroup simd.whereexpr
+        @{
+
+        \class const_where_expression
+            The class template const_where_expression abstracts the notion of selected elements of a given const object
+            of arithmetic or data-parallel type.  Selected elements signifies the elements data[i] for all
+            i ∈ {j ∈ ℕ0 | j < M::size() ⋀ mask[j]}.
+        \tparam M The mask type.
+        \tparam V The value type M applies on.
+     */
+    template <class M, class T>
+    class const_where_expression {
+        const M& simd_mask; // exposition only
+        T& data;  // exposition only
+    public:
+        const_where_expression(const const_where_expression&) = delete;
+        const_where_expression& operator=(const const_where_expression&) = delete;
+        remove_const_t<T> operator-() const &&;
+
+        //template <class U, class Flags> [[nodiscard]] V copy_from(const U* mem, Flags f) const &&;
+        template <class U, class Flags> void copy_to(U* mem, Flags f) const &&;
+    };
+
+    /*! \addtogroup simd.whereexpr
+        \class where_expression
+            The class template where_expression abstracts the notion of selected elements of a given non-const object of
+            arithmetic or data-parallel type. Selected elements signifies the elements data[i] for all
+            i ∈ {j ∈ ℕ0 | j < M::size() ⋀ mask[j]}.
+        \tparam M The mask type.
+        \tparam V The value type M applies on.
+     */
+    template <class M, class T>
+    class where_expression : public const_where_expression<M, T> {
+    public:
+        where_expression(const where_expression&) = delete;
+        where_expression& operator=(const where_expression&) = delete;
+        template <class U> void operator=(U&& x);
+        template <class U> void operator+=(U&& x);
+        template <class U> void operator-=(U&& x);
+        template <class U> void operator*=(U&& x);
+        template <class U> void operator/=(U&& x);
+        template <class U> void operator%=(U&& x);
+        template <class U> void operator&=(U&& x);
+        template <class U> void operator|=(U&& x);
+        template <class U> void operator^=(U&& x);
+        template <class U> void operator<<=(U&& x);
+        template <class U> void operator>>=(U&& x);
+        void operator++();
+        void operator++(int);
+        void operator--();
+        void operator--(int);
+        template <class U, class Flags> void copy_from(const U* mem, Flags);
+    };
+    //! @}
+
+
+
+}
+
+#endif //STD_EXPERIMENTAL_SIMD_H
