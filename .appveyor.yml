@@ -1,5 +1,5 @@
 image:
-  - Visual Studio 201
+  - Visual Studio 2019
 
 clone_folder: c:\projects\std-experimental-simd
 
@@ -11,4 +11,4 @@ before_build:
 
 build_script:
   - cmake --build .\
-  - ctest
+  - ctest -C Debug
