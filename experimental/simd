@@ -17,14 +17,30 @@ namespace std::experimental {
 
      */
     namespace datapar_abi {
-        struct scalar {};
+
     }
 
     /*! \namespace simd_abi
 
      */
     namespace simd_abi {
+        struct scalar {};
 
+        template <size_t size_in_bytes> struct vector_register
+        {
+            inline static constexpr size_t size = size_in_bytes;
+            using is_valid_abi_tag = std::integral_constant<bool, true>;
+        };
+
+        template <size_t size_in_bytes> struct vector_mask_register
+        {
+            inline static constexpr size_t size = size_in_bytes;
+            using is_valid_abi_tag = std::integral_constant<bool, true>;
+        };
+
+        using sse_register = vector_register<16>;
+        using avx_register = vector_register<32>;
+        using avx512_register = vector_register<64>;
     }
 
     /*! \defgroup simd.traits
@@ -32,7 +48,19 @@ namespace std::experimental {
 
      */
 
-    template <class T> struct is_abi_tag;
+
+    template <class, class = std::void_t<>>
+    struct is_abi_tag : std::integral_constant<bool, false>
+    {
+    };
+
+    template< class T >
+    struct is_abi_tag<T, std::void_t<typename T::is_valid_abi_tag>> : std::integral_constant<bool, true> { };
+
+    template <typename _Tp>
+    inline constexpr bool is_abi_tag_v = is_abi_tag<_Tp>::value;
+
+
     template <class T> struct is_simd;
     template <class T> struct is_mask;
 //    template <class T, size_t N> struct abi_for_size { using type = implementation-defined; };
