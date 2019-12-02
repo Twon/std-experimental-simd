@@ -21,7 +21,7 @@ constexpr bool static_test()
 }
 
 
-TEST_CASE("Minimal test case", "[test.nothing]")
+TEST_CASE("Test ABI type traits", "[simd.abi.traits]")
 {
     REQUIRE(static_test<is_abi_tag<simd_abi::sse_register>::type::value>());
     REQUIRE(static_test<is_abi_tag<simd_abi::avx_register>::type::value>());

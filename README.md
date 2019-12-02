@@ -1,4 +1,12 @@
 # std-experimental-simd
+
+[![appveyor][badge.appveyor]][appveyor]
+
+[badge.appveyor]: https://img.shields.io/appveyor/ci/twon/std-experimental-simd/master.svg?logo=appveyor
+
+[appveyor]: https://ci.appveyor.com/project/twon/std-experimental-simd
+
+
 A reference implementation of std::experimental::simd, providing data parallel types in the C++ standard.  This provides an alternative implementation of std::experimantal::simd which targets cross compiler conformant for x86/x64 instruction set architectures.
 
 # Alternative Implementation
