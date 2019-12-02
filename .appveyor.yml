@@ -1,0 +1,14 @@
+image:
+  - Visual Studio 201
+
+clone_folder: c:\projects\std-experimental-simd
+
+before_build:
+  - cd c:\projects\std-experimental-simd
+  - mkdir build
+  - cd build
+  - cmake ..\
+
+build_script:
+  - cmake --build .\
+  - ctest
