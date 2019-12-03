@@ -71,8 +71,6 @@ matrix:
 
     # GCC 8
     - env: COMPILER=g++-8 BUILD_TYPE=Debug
-      language: python
-      python: "3.7"
       addons: &gcc8
         apt:
           packages:
@@ -82,8 +80,6 @@ matrix:
 
     # GCC 9
     - env: COMPILER=g++-9 BUILD_TYPE=Debug
-      language: python
-      python: "3.7"
       addons: &gcc9
         apt:
           packages:
