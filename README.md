@@ -1,10 +1,22 @@
 # std-experimental-simd
 
+[![travis][badge.travis]][travis]
 [![appveyor][badge.appveyor]][appveyor]
+[![language][badge.language]][language]
+[![license][badge.license]][license]
+[![issues][badge.issues]][issues]
 
+[badge.travis]: https://img.shields.io/travis/twon/std-experimental-simd/master.svg?logo=travis
 [badge.appveyor]: https://img.shields.io/appveyor/ci/twon/std-experimental-simd/master.svg?logo=appveyor
+[badge.language]: https://img.shields.io/badge/language-C%2B%2B20-yellow.svg
+[badge.license]: https://img.shields.io/badge/license-MIT-blue.svg
+[badge.issues]: https://img.shields.io/github/issues/twon/std-experimental-simd.svg
 
+[travis]: https://travis-ci.org/twon/std-experimental-simd
 [appveyor]: https://ci.appveyor.com/project/twon/std-experimental-simd
+[language]: https://en.wikipedia.org/wiki/C%2B%2B20
+[license]: https://en.wikipedia.org/wiki/MIT_License
+[issues]: http://github.com/twon/std-experimental-simd/issues
 
 
 A reference implementation of std::experimental::simd, providing data parallel types in the C++ standard.  This provides an alternative implementation of std::experimantal::simd which targets cross compiler conformant for x86/x64 instruction set architectures.
