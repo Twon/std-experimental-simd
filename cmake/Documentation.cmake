@@ -11,10 +11,10 @@ if(ENABLE_BUILD_DOCUMENTATION)
     set(DOXYGEN_EXTENSION_MAPPING "no_extension=C++")
 
     doxygen_add_docs(Documentation
-            ${CMAKE_CURRENT_SOURCE_DIR}/simd/simd # Force inclusion of simd header with no extension
-            ${CMAKE_CURRENT_SOURCE_DIR}/simd
+            ${CMAKE_CURRENT_SOURCE_DIR}/experimental/simd # Force inclusion of simd header with no extension
+            ${CMAKE_CURRENT_SOURCE_DIR}/experimental
         WORKING_DIRECTORY
-            ${PROJECT_SOURCE_DIR}/simd/
+            ${PROJECT_SOURCE_DIR}/experimental/
         COMMENT
             "Generating API documentation with Doxygen"
     )
