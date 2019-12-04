@@ -25,22 +25,28 @@ namespace std::experimental {
      */
     namespace simd_abi {
 
-        /*! \namespace details
+        /*! \namespace detail
                 Internal implementation defined details of the simd_abi namespace.
          */
-        namespace details {
+        namespace detail {
 
 
             struct scalar_register {
                 using is_valid_abi_tag = std::integral_constant<bool, true>;
             };
 
+            /*! \struct vector_register
+                   Internal type for representing vector registers supported by the underlying platform.
+            */
             template<size_t size_in_bytes>
             struct vector_register {
                 inline static constexpr size_t size = size_in_bytes;
                 using is_valid_abi_tag = std::integral_constant<bool, true>;
             };
 
+            /*! \struct vector_mask_register
+                   Internal type for representing vector mask registers supported by the underlying platform.
+            */
             template<size_t size_in_bytes>
             struct vector_mask_register {
                 inline static constexpr size_t size = size_in_bytes;
@@ -55,7 +61,7 @@ namespace std::experimental {
         /*! With the scalar ABI tag, data-parallel types are equivalent to a single element type. However, the full
             simd and simd_mask interface is supported and thus eases development of generic code.
          */
-        using scalar = details::scalar_register;
+        using scalar = detail::scalar_register;
 
         /*! An alias for the ABI tag with the most efficient data parallel execution for the element type T that
             ensures ABI compatibility on the target architecture.
