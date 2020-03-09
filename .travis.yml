@@ -22,14 +22,14 @@ matrix:
     ##########################################################################
 
     # XCode 10.3
-    - env: COMPILER=clang++ BUILD_TYPE=Debug
+    - env: COMPILER=clang++ BUILD_TYPE=Debug COVERAGE=0
       os: osx
       osx_image: xcode10.3
       language: generic
       compiler: clang
 
     # XCode 11.1
-    - env: COMPILER=clang++ BUILD_TYPE=Debug
+    - env: COMPILER=clang++ BUILD_TYPE=Debug COVERAGE=0
       os: osx
       osx_image: xcode11.1
       language: generic
@@ -40,7 +40,7 @@ matrix:
     ##########################################################################
 
     # Clang 8.0
-    - env: COMPILER=clang++-8 BUILD_TYPE=Debug
+    - env: COMPILER=clang++-8 BUILD_TYPE=Debug COVERAGE=1
       addons: &clang80
         apt:
           packages:
@@ -53,7 +53,7 @@ matrix:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
 
     # Clang 9.0
-    - env: COMPILER=clang++-9 BUILD_TYPE=Debug
+    - env: COMPILER=clang++-9 BUILD_TYPE=Debug COVERAGE=1
       addons: &clang80
         apt:
           packages:
@@ -70,7 +70,7 @@ matrix:
     ##########################################################################
 
     # GCC 8
-    - env: COMPILER=g++-8 BUILD_TYPE=Debug
+    - env: COMPILER=g++-8 BUILD_TYPE=Debug COVERAGE=1
       addons: &gcc8
         apt:
           packages:
@@ -79,7 +79,7 @@ matrix:
             - sourceline: 'ppa:ubuntu-toolchain-r/test'
 
     # GCC 9
-    - env: COMPILER=g++-9 BUILD_TYPE=Debug
+    - env: COMPILER=g++-9 BUILD_TYPE=Debug COVERAGE=0
       addons: &gcc9
         apt:
           packages:
@@ -158,9 +158,16 @@ before_script:
   # have CMake to generate build files
   - cd "${TRAVIS_BUILD_DIR}"
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DENABLE_CODE_COVERAGE=$COVERAGE
 
 script:
   # build and run tests
   - cmake --build . -- -j${JOBS}
   - ctest --output-on-failure -j${JOBS}
+  # Waiting for the following issue to be fixed before Mac OS X support can be enabled: https://github.com/RWTH-HPC/CMake-codecov/pull/15
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "linux" ]] && [[ "${COVERAGE}" == "1" ]]; then
+      cmake --build . --target gcov
+      cmake --build . --target lcov
+      bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
+    fi
