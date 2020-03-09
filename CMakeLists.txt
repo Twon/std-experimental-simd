@@ -174,7 +174,7 @@ configure_package_config_file(
     ${CMAKE_CURRENT_LIST_DIR}/cmake/std_experimental_simd-config.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/std_experimental_simd-config.cmake
     INSTALL_DESTINATION
-        "${CMAKE_INSTALL_LIBDIR}/cmake/propagate_const"
+        "${CMAKE_INSTALL_LIBDIR}/cmake/std_experimental_simd"
 )
 
 write_basic_package_version_file(

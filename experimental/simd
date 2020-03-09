@@ -9,7 +9,7 @@
 #include <experimental/simd_platform.hpp>
 
 /*! \namespace std::experimental
-
+        An area for experimental C++ language and library extensions for future standardization.
  */
 namespace std::experimental {
 
@@ -87,7 +87,7 @@ namespace std::experimental {
         using native = scalar;
     }
 
-    /*! \defgroup simd.traits
+    /*! \defgroup simd-traits
         @{
 
         \struct is_abi_tag
@@ -124,7 +124,7 @@ namespace std::experimental {
     };
 
 
-    /*! \defgroup simd.whereexpr
+    /*! \defgroup simd-whereexpr
         @{
 
         \class const_where_expression
@@ -147,7 +147,7 @@ namespace std::experimental {
         template <class U, class Flags> void copy_to(U* mem, Flags f) const &&;
     };
 
-    /*! \addtogroup simd.whereexpr
+    /*! \addtogroup simd-whereexpr
         \class where_expression
             The class template where_expression abstracts the notion of selected elements of a given non-const object of
             arithmetic or data-parallel type. Selected elements signifies the elements data[i] for all
